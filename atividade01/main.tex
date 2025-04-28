@@ -1,0 +1,116 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+\usepackage{graphicx,url,float}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath}
+
+\sloppy
+\raggedbottom
+
+\title{Metaheurísticas - Modelagem de Problema de Otimização Combinatória}
+
+\author{Helder Mateus dos Reis Matos\inst{1}}
+
+\address{
+	Programa de Pós-Graduação em Ciência da Computação (PPGCC)\\
+	Instituto de Ciências Exatas e Naturais (ICEN)\\
+	Universidade Federal do Pará (UFPA)\\
+	Av. Augusto Correa 01, 66075-090 -- Belém -- PA -- Brasil
+	\email{helder.matos@icen.ufpa.br}
+}
+
+\begin{document} 
+
+\maketitle
+
+\section{Descrição do Problema}
+
+Uma empresa precisa, anualmente, planejar a execução de uma série de projetos que serão terceirizados para diferentes subsidiárias e estúdios parceiros.
+
+Para o planejamento deste ano há 9 projetos a serem planejados para execução por 9 terceirizadas. Cada parceira pode executar apenas um projeto e não há qualquer ordem de precedência entre eles.
+
+A tabela abaixo apresenta a matriz de custos da relação empresa (E) x projeto (P), com o respectivo custo que cada empresa cobra para realizar cada projeto.
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Emp./Proj.} & \textbf{P1} & \textbf{P2} & \textbf{P3} & \textbf{P4} & \textbf{P5} & \textbf{P6} & \textbf{P7} & \textbf{P8} & \textbf{P9} \\ \hline
+\textbf{E1}         & 12          & 18          & 15          & 22          & 9           & 14          & 20          & 11          & 17          \\ \hline
+\textbf{E2}         & 19          & 8           & 13          & 25          & 16          & 10          & 7           & 21          & 24          \\ \hline
+\textbf{E3}         & 6           & 14          & 27          & 10          & 12          & 19          & 23          & 16          & 8           \\ \hline
+\textbf{E4}         & 17          & 11          & 20          & 9           & 18          & 13          & 25          & 14          & 22          \\ \hline
+\textbf{E5}         & 10          & 23          & 16          & 14          & 7           & 21          & 12          & 19          & 15          \\ \hline
+\textbf{E6}         & 13          & 25          & 9           & 17          & 11          & 8           & 16          & 22          & 20          \\ \hline
+\textbf{E7}         & 21          & 16          & 24          & 12          & 20          & 15          & 9           & 18          & 10          \\ \hline
+\textbf{E8}         & 8           & 19          & 11          & 16          & 22          & 17          & 14          & 10          & 13          \\ \hline
+\textbf{E9}         & 15          & 10          & 18          & 21          & 13          & 12          & 22          & 9           & 16          \\ \hline
+\end{tabular}
+\end{table}
+
+O problema então é alocar cada empresa a um e somente um projeto específico, de forma que o custo total dessas alocações seja o menor possível.
+
+\section{Solução}
+
+A descrição informa que o custo total da alocação das empresas aos projetos deve ser o menor possível, o que leva a conclusão de que este é um \textbf{problema de minimização} sobre o custo da alocação.
+
+Somado a este fato, é importante destacar que cada empresa deve executar um e somente um projeto específico. Dessa forma, a variável de decisão deve capturar a alocação ou não de uma empresa $i$ a um projeto $j$, de forma binária.
+
+\begin{equation*}
+    x_{ij} = 
+    \begin{cases}
+        1,\ \text{se a empresa } i \ \text{for alocada ao projeto } j\text{.}\\
+        0,\ \text{caso contrário.}
+    \end{cases}
+\end{equation*}
+
+De posse da variável de decisão, a função objetivo é expressa em função dessa variável, considerando o valor do custo $c_{ij}$ da mesma, com o objetivo de minimização.
+
+$$Min\ Z = \sum_{i=1}^{9}\sum_{j=1}^{9} x_{ij} \cdot c_ {ij}$$
+
+Além disso, as alocações estão sujeitas à restrições, especialmente em relação à alocação unitária, garantindo que nenhuma empresa pegue mais que um projeto. Considerando a tabela fornecida como uma matriz, é fácil perceber que a soma da variável de decisão para cada linha deve ser igual a 1, o mesmo valendo para a soma de cada coluna. Dessa forma, variando $i$ ou variando $j$ de cada vez, a soma desses eixos é igual a 1.
+
+\begin{itemize}
+    \item $\sum_{i=1}^{9} x_{ij} = 1, \forall i \in \{1,2,...,9\}$: cada empresa está alocada a somente um projeto;
+    \item $\sum_{j=1}^{9} x_{ij} = 1, \forall j \in \{1,2,...,9\}$: cada projeto é executado por uma empresa;
+    \item $x_{ij} = 1, \forall i \in \{0,1\}$: a alocação é binária.
+\end{itemize}
+
+Uma solução possível ($z=147$, para efeitos de comparação) é dada pela tabela a seguir, onde está mapeada a restrição binária da variável de decisão $x_{ij}$ e a última linha e última coluna representam as somas de $x_{ij}$ ao variar $i$ e $j$, respectivamente:
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+              & $x_{i1}$ & $x_{i2}$ & $x_{i3}$ & $x_{i4}$ & $x_{i5}$ & $x_{i6}$ & $x_{i7}$ & $x_{i8}$ & $x_{i9}$ & $\sum_{j=1}^{9}x_{ij}$ \\ \hline
+$x_{1j}$               & 0        & 1        & 0        & 0        & 0        & 0        & 0        & 0        & 0        & 1                      \\ \hline
+$x_{2j}$               & 0        & 0        & 0        & 0        & 0        & 0        & 0        & 1        & 0        & 1                      \\ \hline
+$x_{3j}$               & 0        & 0        & 0        & 0        & 1        & 0        & 0        & 0        & 0        & 1                      \\ \hline
+$x_{4j}$               & 0        & 0        & 1        & 0        & 0        & 0        & 0        & 0        & 0        & 1                      \\ \hline
+$x_{5j}$               & 0        & 0        & 0        & 0        & 0        & 0        & 1        & 0        & 0        & 1                      \\ \hline
+$x_{6j}$               & 0        & 0        & 0        & 0        & 0        & 0        & 0        & 0        & 1        & 1                      \\ \hline
+$x_{7j}$               & 0        & 0        & 0        & 0        & 0        & 1        & 0        & 0        & 0        & 1                      \\ \hline
+$x_{8j}$               & 1        & 0        & 0        & 0        & 0        & 0        & 0        & 0        & 0        & 1                      \\ \hline
+$x_{9j}$               & 0        & 0        & 0        & 1        & 0        & 0        & 0        & 0        & 0        & 1                      \\ \hline
+$\sum_{i=1}^{9}x_{ij}$ & 1        & 1        & 1        & 1        & 1        & 1        & 1        & 1        & 1        &                        \\ \hline
+\end{tabular}
+\end{table}
+
+Dessa forma, o problema é modelado da seguinte forma:
+
+\begin{equation*}
+Min\ Z = \sum_{i=1}^{9}\sum_{j=1}^{9} x_{ij} \cdot c_ {ij}\\
+\end{equation*}
+
+\begin{equation*}
+\text{sujeito a:}
+\begin{cases}
+    \sum_{i=1}^{9} x_{ij} = 1, \forall i \in \{1,2,...,9\}\\
+    \sum_{j=1}^{9} x_{ij} = 1, \forall j \in \{1,2,...,9\}\\
+    x_{ij} = 1, \forall i \in \{0,1\}
+\end{cases}
+\end{equation*}
+
+\end{document}
