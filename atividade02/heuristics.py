@@ -16,6 +16,10 @@ class HillClimbing:
         
         self.initial_solution = self.best_solution = Solution(cost_matrix.shape[0], cost_matrix.shape[1])
         self.best_cost = self.objective_function(self.best_solution)
+        self.history = {
+            "best_solution": [],
+            "best_cost": [],
+        }
 
     def run(self):
 
@@ -33,6 +37,9 @@ class HillClimbing:
             if self.problem(new_cost, self.best_cost):
                 self.best_solution = current_solution
                 self.best_cost = new_cost
+
+            self.history["best_solution"].append(self.best_solution)
+            self.history["best_cost"].append(self.best_cost)
                 
             self.n_iterations += 1
             current_patience += 1
