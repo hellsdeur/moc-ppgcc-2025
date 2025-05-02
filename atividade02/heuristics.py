@@ -29,7 +29,7 @@ class HillClimbing:
         current_solution = self.initial_solution
         current_patience = 0
 
-        while self.n_iterations < self.max_iterations or current_patience < self.patience:
+        while self.n_iterations < self.max_iterations and current_patience < self.patience:
 
             current_solution.move()
             new_cost = self.objective_function(self.best_solution)
@@ -37,12 +37,14 @@ class HillClimbing:
             if self.problem(new_cost, self.best_cost):
                 self.best_solution = current_solution
                 self.best_cost = new_cost
+                current_patience = 0
+            else:
+                current_patience += 1
 
             self.history["best_solution"].append(self.best_solution)
             self.history["best_cost"].append(self.best_cost)
                 
             self.n_iterations += 1
-            current_patience += 1
         
         self._called = True
 
